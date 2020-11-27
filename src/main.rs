@@ -1,14 +1,8 @@
 mod neural_net;
+mod loss;
 
 use neural_net::Neuron;
-
-fn mean_squared_error(output: f64, target: f64) -> f64 {
-    (output - target).powi(2)
-}
-
-fn output_gradient(output: f64, target: f64) -> f64 {
-    2. * (output - target)
-}
+use loss::MSE;
 
 fn gradient_descent(neuron: &mut Neuron) {
 
@@ -25,22 +19,25 @@ fn main() {
     let weights = vec![-2.];
 
     let mut neuron = Neuron::new(weights);
+    let mut loss_function = MSE::new();
 
     println!("{:?}", neuron);
 
     let inputs = vec![2.];
 
     let num_epochs = 100;
-    for i in 0..num_epochs {
+    for _i in 0..num_epochs {
         let output = neuron.forward(&inputs);
 
         //println!("Output: {}", output);
-        let target = 1.;
-        let loss = mean_squared_error(output, target);
+        let outputs = vec![output];
+        let targets = vec![1.];
+        let loss = loss_function.forward(&outputs, &targets);
 
-        println!("Loss: {}", loss);
+        println!("Loss: {:?}", loss);
 
-        neuron.backward(output_gradient(output, target));
+        loss_function.backward();
+        neuron.backward(loss_function.gradients[0]);
 
         //println!("{:?}", neuron);
 
