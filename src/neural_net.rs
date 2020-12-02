@@ -1,3 +1,5 @@
+use crate::activation_functions::Sigmoid;
+
 #[derive(Debug)]
 pub struct Neuron {
     
@@ -9,6 +11,8 @@ pub struct Neuron {
     //gradient calculation
     inputs: Vec<f64>,
 
+    sigmoid: Sigmoid,
+
 }
 
 impl Neuron {
@@ -16,30 +20,35 @@ impl Neuron {
     pub fn new(weights: Vec<f64>) -> Self {
         let gradients = vec![0.; weights.len()];
         let inputs = vec![0.; weights.len()];
+        let sigmoid = Sigmoid::new();
         Neuron {
             weights,
             gradients,
             inputs,
+            sigmoid,
         }
     }
 
     pub fn forward(&mut self, inputs: &Vec<f64>) -> f64 {
 
-        let mut sum = 0.;
+        let mut activation = 0.;
         for i in 0..inputs.len() {
-            sum += inputs[i] * self.weights[i];
+            activation += inputs[i] * self.weights[i];
         }
+
+        let output = self.sigmoid.forward(activation);
 
         self.inputs = inputs.to_vec();
 
-        sum
+        output
 
     }
 
     //Computes the gradients
     pub fn backward(&mut self, output_grad: f64) {
+        self.sigmoid.backward(output_grad);
         for i in 0..self.gradients.len() {
-            self.gradients[i] = self.inputs[i] * output_grad;
+            self.gradients[i] = self.inputs[i] * self.sigmoid.gradient;
         }
     }
 

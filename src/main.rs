@@ -1,5 +1,6 @@
 mod neural_net;
 mod loss;
+mod activation_functions;
 
 use neural_net::Neuron;
 use loss::MSE;
@@ -25,11 +26,11 @@ fn main() {
 
     let inputs = vec![2.];
 
-    let num_epochs = 100;
+    let num_epochs = 10000;
     for _i in 0..num_epochs {
         let output = neuron.forward(&inputs);
 
-        //println!("Output: {}", output);
+        println!("Output: {}", output);
         let outputs = vec![output];
         let targets = vec![1.];
         let loss = loss_function.forward(&outputs, &targets);
