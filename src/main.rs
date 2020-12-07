@@ -17,7 +17,7 @@ fn gradient_descent(neuron: &mut Neuron) {
 fn main() {
 
     //let weights = vec![1., 2., 3.];
-    let weights = vec![-2.];
+    let weights = vec![-2., 1.];
 
     let mut neuron = Neuron::new(weights);
     let mut loss_function = MSE::new();
@@ -26,8 +26,10 @@ fn main() {
 
     let inputs = vec![2.];
 
-    let num_epochs = 10000;
-    for _i in 0..num_epochs {
+    let num_epochs = 1000;
+    for i in 0..num_epochs {
+        println!("Epoch: {}", i);
+
         let output = neuron.forward(&inputs);
 
         println!("Output: {}", output);
