@@ -2,9 +2,11 @@ mod neural_net;
 mod loss;
 mod activation_functions;
 
-use neural_net::Neuron;
+//use neural_net::Neuron;
+use neural_net::Layer;
 use loss::MSE;
 
+/*
 fn gradient_descent(neuron: &mut Neuron) {
 
     let learning_rate = 0.01;
@@ -13,21 +15,30 @@ fn gradient_descent(neuron: &mut Neuron) {
     }
 
 }
+*/
 
 fn main() {
 
-    //let weights = vec![1., 2., 3.];
-    let weights = vec![-2., 1.];
-    let num_inputs = 2;
-
-    //let mut neuron = Neuron::new(weights);
-    let mut neuron = Neuron::new(num_inputs);
     let mut loss_function = MSE::new();
 
-    println!("{:?}", neuron);
+    //let weights = vec![-2., 1.];
+    let num_neurons = 2;
+    let inputs_per_neuron = 2;
 
-    let inputs = vec![2.];
+    let mut layer = Layer::new(num_neurons, inputs_per_neuron);
 
+    //println!("{:?}", neuron);
+    println!("{:?}", layer);
+
+    let inputs = vec![2., 3.];
+
+    let outputs = layer.forward(&inputs);
+
+    println!("{:?}", outputs);
+
+    std::process::exit(0);
+
+    /*
     let num_epochs = 1;
     for i in 0..num_epochs {
         println!("Epoch: {}", i);
@@ -52,4 +63,5 @@ fn main() {
         neuron.zero_grad();
 
     }
+    */
 }

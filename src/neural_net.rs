@@ -115,6 +115,27 @@ pub struct Layer {
 
 impl Layer {
 
-    //pub fn new()
+    pub fn new(num_neurons: usize, inputs_per_neuron: usize) -> Self {
+        
+        let mut neurons : Vec<Neuron> = Vec::with_capacity(num_neurons);
+        for _ in 0..num_neurons {
+            neurons.push(Neuron::new(inputs_per_neuron)); 
+        }
+
+        Layer {
+            neurons,
+        }
+
+    }
+
+    pub fn forward(&mut self, inputs: &Vec<f64>) -> Vec<f64> {
+
+        let mut outputs = Vec::with_capacity(self.neurons.len());
+        for neuron in self.neurons.iter_mut() {
+            outputs.push(neuron.forward(inputs));
+        }
+        outputs
+         
+    }
 
 }
