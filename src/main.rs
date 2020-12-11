@@ -18,15 +18,17 @@ fn main() {
 
     //let weights = vec![1., 2., 3.];
     let weights = vec![-2., 1.];
+    let num_inputs = 2;
 
-    let mut neuron = Neuron::new(weights);
+    //let mut neuron = Neuron::new(weights);
+    let mut neuron = Neuron::new(num_inputs);
     let mut loss_function = MSE::new();
 
     println!("{:?}", neuron);
 
     let inputs = vec![2.];
 
-    let num_epochs = 1000;
+    let num_epochs = 1;
     for i in 0..num_epochs {
         println!("Epoch: {}", i);
 

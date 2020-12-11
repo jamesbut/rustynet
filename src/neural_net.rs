@@ -1,4 +1,5 @@
 use crate::activation_functions::Sigmoid;
+use rand::distributions::{Normal, Distribution};
 
 #[derive(Debug)]
 pub struct Neuron {
@@ -18,7 +19,8 @@ pub struct Neuron {
 
 impl Neuron {
 
-    pub fn new(weights: Vec<f64>) -> Self {
+    //TODO: Add option for bias
+    pub fn new_w_weight(weights: Vec<f64>) -> Self {
         let gradients = vec![0.; weights.len()];
         let inputs = vec![0.; weights.len()-1];
         let sigmoid = Sigmoid::new();
@@ -28,6 +30,21 @@ impl Neuron {
             inputs,
             sigmoid,
         }
+    }
+
+    //TODO: Add option for bias
+    pub fn new(num_inputs: usize) -> Self {
+        let gradients = vec![0.; num_inputs+1];
+        let inputs = vec![0.; num_inputs];
+        let sigmoid = Sigmoid::new();
+        let weights = Neuron::initialise_weights(num_inputs);
+        Neuron {
+            weights,
+            gradients,
+            inputs,
+            sigmoid,
+        }
+
     }
 
     pub fn forward(&mut self, inputs: &Vec<f64>) -> f64 {
@@ -69,5 +86,35 @@ impl Neuron {
             *grad = 0.;
         }
     }
+
+    fn initialise_weights(num_inputs: usize) -> Vec<f64> {
+        
+        // +1 for bias
+        let mut init_weights = vec![0.; num_inputs+1];
+
+        //Initialise weights from gaussian
+        let normal = Normal::new(0., 1.);
+
+        for weight in init_weights.iter_mut() {
+            //*weight = 1.;
+            *weight = normal.sample(&mut rand::thread_rng()); 
+        }
+
+        init_weights
+
+    }
+
+}
+
+#[derive(Debug)]
+pub struct Layer {
+
+    neurons: Vec<Neuron>,
+
+}
+
+impl Layer {
+
+    //pub fn new()
 
 }
