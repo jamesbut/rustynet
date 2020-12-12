@@ -78,6 +78,7 @@ impl Neuron {
         for i in 0..self.inputs.len() {
             self.gradients[i] = self.inputs[i] * self.sigmoid.gradient;
         }
+        //Bias
         *self.gradients.last_mut().unwrap() = self.sigmoid.gradient;
     }
 
@@ -96,8 +97,8 @@ impl Neuron {
         let normal = Normal::new(0., 1.);
 
         for weight in init_weights.iter_mut() {
-            //*weight = 1.;
-            *weight = normal.sample(&mut rand::thread_rng()); 
+            *weight = 1.;
+            //*weight = normal.sample(&mut rand::thread_rng()); 
         }
 
         init_weights
@@ -109,7 +110,7 @@ impl Neuron {
 #[derive(Debug)]
 pub struct Layer {
 
-    neurons: Vec<Neuron>,
+    pub neurons: Vec<Neuron>,
 
 }
 
@@ -136,6 +137,18 @@ impl Layer {
         }
         outputs
          
+    }
+
+    pub fn backward(&mut self, output_grads: &Vec<f64>) {
+        for i in 0..output_grads.len() {
+            self.neurons[i].backward(output_grads[i]);
+        }
+    }
+
+    pub fn zero_grad(&mut self) {
+        for neuron in self.neurons.iter_mut() {
+            neuron.zero_grad();
+        }
     }
 
 }

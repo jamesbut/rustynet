@@ -1,67 +1,47 @@
 mod neural_net;
 mod loss;
 mod activation_functions;
+mod optimiser;
 
-//use neural_net::Neuron;
 use neural_net::Layer;
 use loss::MSE;
+use optimiser::gradient_descent;
 
-/*
-fn gradient_descent(neuron: &mut Neuron) {
-
-    let learning_rate = 0.01;
-    for i in 0..neuron.weights.len() {
-        neuron.weights[i] -= learning_rate * neuron.gradients[i];
-    }
-
-}
-*/
 
 fn main() {
 
     let mut loss_function = MSE::new();
 
-    //let weights = vec![-2., 1.];
     let num_neurons = 2;
     let inputs_per_neuron = 2;
 
     let mut layer = Layer::new(num_neurons, inputs_per_neuron);
 
-    //println!("{:?}", neuron);
     println!("{:?}", layer);
 
     let inputs = vec![2., 3.];
+    let targets = vec![1., 0.];
 
-    let outputs = layer.forward(&inputs);
-
-    println!("{:?}", outputs);
-
-    std::process::exit(0);
-
-    /*
     let num_epochs = 1;
     for i in 0..num_epochs {
-        println!("Epoch: {}", i);
+        println!("---------------\nEpoch: {}", i);
 
-        let output = neuron.forward(&inputs);
+        println!("Inputs: {:?}", inputs);
+        let outputs = layer.forward(&inputs);
 
-        println!("Output: {}", output);
-        let outputs = vec![output];
-        let targets = vec![1.];
+        println!("Output: {:?}", outputs);
         let loss = loss_function.forward(&outputs, &targets);
 
         println!("Loss: {:?}", loss);
 
         loss_function.backward();
-        neuron.backward(loss_function.gradients[0]);
+        layer.backward(&loss_function.gradients);
 
-        //println!("{:?}", neuron);
+        gradient_descent(&mut layer);
 
-        gradient_descent(&mut neuron);
-
-        println!("{:?}", neuron);
-        neuron.zero_grad();
+        println!("{:?}", layer);
+        layer.zero_grad();
 
     }
-    */
+
 }
