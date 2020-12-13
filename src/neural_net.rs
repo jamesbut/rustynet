@@ -97,8 +97,8 @@ impl Neuron {
         let normal = Normal::new(0., 1.);
 
         for weight in init_weights.iter_mut() {
-            //*weight = 1.;
-            *weight = normal.sample(&mut rand::thread_rng()); 
+            *weight = 1.;
+            //*weight = normal.sample(&mut rand::thread_rng()); 
         }
 
         init_weights
@@ -110,7 +110,7 @@ impl Neuron {
 #[derive(Debug)]
 pub struct Layer {
 
-    pub neurons: Vec<Neuron>,
+    pub neurons: Vec<Neuron>
 
 }
 
@@ -149,6 +149,53 @@ impl Layer {
         for neuron in self.neurons.iter_mut() {
             neuron.zero_grad();
         }
+    }
+
+}
+
+#[derive(Debug)]
+pub struct Network {
+
+    pub layers: Vec<Layer>
+
+}
+
+impl Network {
+
+    pub fn new(num_inputs: usize, num_outputs: usize, 
+               num_hidden_layers: usize, neurons_per_hidden_layer: usize) -> Self {
+        
+        let mut layers : Vec<Layer> = Vec::with_capacity(num_hidden_layers+1);
+
+        if num_hidden_layers == 0 {
+            layers.push(Layer::new(num_outputs, num_inputs));
+        } else {
+
+            layers.push(Layer::new(neurons_per_hidden_layer, num_inputs));
+
+            for _ in 0..num_hidden_layers-1 {
+                layers.push(Layer::new(neurons_per_hidden_layer, neurons_per_hidden_layer));
+            }
+
+            layers.push(Layer::new(num_outputs, neurons_per_hidden_layer));
+
+        }
+
+        Network {
+            layers
+        }
+
+    }
+
+    pub fn forward(&mut self, inputs: &Vec<f64>) -> Vec<f64> {
+        
+        let mut curr_inputs = inputs.to_owned();
+        for layer in self.layers.iter_mut() {
+            curr_inputs = layer.forward(&curr_inputs);
+        }
+
+        curr_inputs
+
     }
 
 }
