@@ -198,4 +198,8 @@ impl Network {
 
     }
 
+    pub fn backward(&mut self, loss_grads: &Vec<f64>) {
+
+    }
+
 }

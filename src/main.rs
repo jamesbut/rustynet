@@ -34,15 +34,15 @@ fn main() {
         let outputs = network.forward(&inputs);
 
         println!("Output: {:?}", outputs);
-        /*
         let loss = loss_function.forward(&outputs, &targets);
 
         println!("Targets: {:?}", targets);
         println!("Loss: {:?}", loss);
 
         loss_function.backward();
-        layer.backward(&loss_function.gradients);
+        network.backward(&loss_function.gradients);
 
+        /*
         gradient_descent(&mut layer);
 
         println!("{:?}", layer);
