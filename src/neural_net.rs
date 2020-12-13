@@ -97,8 +97,8 @@ impl Neuron {
         let normal = Normal::new(0., 1.);
 
         for weight in init_weights.iter_mut() {
-            *weight = 1.;
-            //*weight = normal.sample(&mut rand::thread_rng()); 
+            //*weight = 1.;
+            *weight = normal.sample(&mut rand::thread_rng()); 
         }
 
         init_weights

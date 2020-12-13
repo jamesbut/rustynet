@@ -22,7 +22,7 @@ fn main() {
     let inputs = vec![2., 3.];
     let targets = vec![1., 0.];
 
-    let num_epochs = 1;
+    let num_epochs = 10000;
     for i in 0..num_epochs {
         println!("---------------\nEpoch: {}", i);
 
@@ -32,6 +32,7 @@ fn main() {
         println!("Output: {:?}", outputs);
         let loss = loss_function.forward(&outputs, &targets);
 
+        println!("Targets: {:?}", targets);
         println!("Loss: {:?}", loss);
 
         loss_function.backward();
