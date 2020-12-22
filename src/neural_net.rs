@@ -73,13 +73,19 @@ impl Neuron {
     }
 
     //Computes the gradients
-    pub fn backward(&mut self, output_grad: f64) {
+    pub fn backward(&mut self, output_grad: f64) -> f64 {
+
         self.sigmoid.backward(output_grad);
+
         for i in 0..self.inputs.len() {
             self.gradients[i] = self.inputs[i] * self.sigmoid.gradient;
         }
         //Bias
         *self.gradients.last_mut().unwrap() = self.sigmoid.gradient;
+
+        //Return dL/da
+        //Sigmoid gradient stores dL/da not do/da
+        self.sigmoid.gradient
     }
 
     pub fn zero_grad(&mut self) {
@@ -97,8 +103,8 @@ impl Neuron {
         let normal = Normal::new(0., 1.);
 
         for weight in init_weights.iter_mut() {
-            *weight = 1.;
-            //*weight = normal.sample(&mut rand::thread_rng()); 
+            //*weight = 1.;
+            *weight = normal.sample(&mut rand::thread_rng()); 
         }
 
         init_weights
@@ -139,10 +145,12 @@ impl Layer {
          
     }
 
-    pub fn backward(&mut self, output_grads: &Vec<f64>) {
+    pub fn backward(&mut self, output_grads: &Vec<f64>) -> Vec<f64> {
+        let mut deltas = Vec::with_capacity(self.neurons.len());
         for i in 0..output_grads.len() {
-            self.neurons[i].backward(output_grads[i]);
+            deltas.push(self.neurons[i].backward(output_grads[i]));
         }
+        deltas
     }
 
     pub fn zero_grad(&mut self) {
@@ -200,8 +208,25 @@ impl Network {
 
     pub fn backward(&mut self, loss_grads: &Vec<f64>) {
 
-        for layer in self.layers.iter_mut() {
-            layer.backward(loss_grads);
+        //Just pass the outer layer the loss gradients
+        let mut prev_layer_deltas = self.layers.last_mut().unwrap().backward(loss_grads);
+        if self.layers.len() < 2 {
+            return
+        }
+
+        //For the inner layers, one needs to calculate different gradients to backprop
+        for i in self.layers.len()-2..=0 {
+            //Collect the previous layer deltas multipled by the weights
+            let mut prev_layer_delta_weights = Vec::with_capacity(prev_layer_deltas.len());
+            for j in 0..self.layers[i].neurons.len() {
+                let mut delta_weights = 0.;
+                for k in 0..self.layers[i+1].neurons.len() {
+                    delta_weights += prev_layer_deltas[k] * 
+                                     self.layers[i+1].neurons[k].weights[j]; 
+                }
+                prev_layer_delta_weights.push(delta_weights);
+            }
+            prev_layer_deltas = self.layers[i].backward(&prev_layer_delta_weights);
         }
         
     }
