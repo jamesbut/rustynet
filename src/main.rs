@@ -14,19 +14,18 @@ fn main() {
 
     let num_inputs = 2;
     let num_outputs = 2;
-    let num_hidden_layers = 1;
+    let num_hidden_layers = 0;
     let neurons_per_hidden_layer = 2;
 
-    //let mut layer = Layer::new(num_neurons, inputs_per_neuron);
     let mut network = Network::new(num_inputs, num_outputs, num_hidden_layers,
                                    neurons_per_hidden_layer);
 
     println!("{:?}", network);
 
     let inputs = vec![2., 3.];
-    let targets = vec![1., 0.];
+    let targets = vec![0.6, 0.4];
 
-    let num_epochs = 1;
+    let num_epochs = 10000;
     for i in 0..num_epochs {
         println!("---------------\nEpoch: {}", i);
 
@@ -42,12 +41,10 @@ fn main() {
         loss_function.backward();
         network.backward(&loss_function.gradients);
 
-        /*
-        gradient_descent(&mut layer);
+        gradient_descent(&mut network);
 
-        println!("{:?}", layer);
-        layer.zero_grad();
-        */
+        println!("{:?}", network);
+        network.zero_grad();
 
     }
 

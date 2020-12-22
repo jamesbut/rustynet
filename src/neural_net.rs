@@ -200,6 +200,16 @@ impl Network {
 
     pub fn backward(&mut self, loss_grads: &Vec<f64>) {
 
+        for layer in self.layers.iter_mut() {
+            layer.backward(loss_grads);
+        }
+        
+    }
+
+    pub fn zero_grad(&mut self) {
+        for layer in self.layers.iter_mut() {
+            layer.zero_grad();
+        }
     }
 
 }
